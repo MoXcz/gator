@@ -69,6 +69,7 @@ func handlerRegister(s *state, cmd command) error {
 	}
 
 	fmt.Printf("User '%v: %v' was added successfully\n", user.ID, user.Name)
+
 	err = s.cfg.SetUser(user.Name)
 	if err != nil {
 		return err
