@@ -3,15 +3,14 @@ package main
 import "fmt"
 
 func handlerLogin(s *state, cmd command) error {
-	if len(cmd.args) <= 0 {
-		return fmt.Errorf("Error: expected a username")
+	if len(cmd.Args) != 1 {
+		return fmt.Errorf("usage: %s <name>", cmd.Name)
 	}
+	username := cmd.Args[0]
 
-	user := cmd.args[0]
-
-	err := s.cfg.SetUser(user)
+	err := s.cfg.SetUser(username)
 	if err != nil {
-		return err
+		return fmt.Errorf("user was not set: %w", err)
 	}
 
 	fmt.Println("The user has been set")
