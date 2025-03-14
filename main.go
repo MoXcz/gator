@@ -1,14 +1,20 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/MoXcz/gator/internal/config"
+	"github.com/MoXcz/gator/internal/database"
+
+	_ "github.com/lib/pq"
 )
 
 type state struct {
 	cfg *config.Config
+	db  *database.Queries
 }
 
 func main() {
@@ -17,8 +23,15 @@ func main() {
 		fmt.Println(err)
 	}
 
+	db, err := sql.Open("postgres", cfg.DBURL)
+	if err != nil {
+		log.Fatalf("Error: Could not connect toe db, %v", err)
+	}
+	defer db.Close()
+	dbQueries := database.New(db)
 	programState := state{
 		cfg: &cfg,
+		db:  dbQueries,
 	}
 
 	cmds := commands{
@@ -27,8 +40,7 @@ func main() {
 	cmds.register("login", handlerLogin)
 
 	if len(os.Args) < 2 {
-		fmt.Println("Error: Insufficient arguments")
-		os.Exit(1)
+		log.Fatalf("Error: Insufficient arguments")
 	}
 
 	cmdName := os.Args[1]
@@ -36,7 +48,6 @@ func main() {
 
 	err = cmds.run(&programState, command{Name: cmdName, Args: cmdArgs})
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		log.Fatal(err)
 	}
 }

@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"context"
+	"fmt"
+)
 
 func handlerLogin(s *state, cmd command) error {
 	if len(cmd.Args) != 1 {
@@ -8,7 +11,12 @@ func handlerLogin(s *state, cmd command) error {
 	}
 	username := cmd.Args[0]
 
-	err := s.cfg.SetUser(username)
+	user, err := s.db.GetUser(context.Background(), username)
+	if err != nil {
+		return fmt.Errorf("Error: user does not exist, %w", err)
+	}
+
+	err = s.cfg.SetUser(user.Name)
 	if err != nil {
 		return fmt.Errorf("user was not set: %w", err)
 	}
