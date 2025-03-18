@@ -11,13 +11,24 @@ import (
 
 // Fetch RSS feed
 func handlerAgg(s *state, cmd command) error {
-	feed, err := fetchFeed(context.Background(), "https://www.wagslane.dev/index.xml")
+	if len(cmd.Args) != 1 {
+		return fmt.Errorf("usage: %s <time>", cmd.Name)
+	}
+	reqTime, err := time.ParseDuration(cmd.Args[0])
 	if err != nil {
-		return fmt.Errorf("Error while fetching feed: %w", err)
+		return fmt.Errorf("Error: Could not parse time, %w", err)
 	}
 
-	fmt.Printf("Feed: %+v", feed)
-	return nil
+	fmt.Println("Collecting feeds every", cmd.Args[0])
+
+	ticker := time.NewTicker(reqTime)
+
+	for ; ; <-ticker.C {
+		err := scrapeFeed(s)
+		if err != nil {
+			return err
+		}
+	}
 }
 
 // Add RSS feed
@@ -96,4 +107,28 @@ func printFeed(feed database.Feed, user database.User) {
 	fmt.Println("URL: ", feed.Url)
 	fmt.Println("Created: ", feed.CreatedAt)
 	fmt.Println("User: ", user.Name)
+}
+
+func scrapeFeed(s *state) error {
+	lastFeed, err := s.db.GetNextFeedToFetch(context.Background())
+	if err != nil {
+		return fmt.Errorf("Error: Could not get last feed, %w", err)
+	}
+
+	err = s.db.MarkFeedFetched(context.Background(), lastFeed.ID)
+	if err != nil {
+		return fmt.Errorf("Error: Could not mark last feed, %w", err)
+	}
+
+	feeds, err := fetchFeed(context.Background(), lastFeed.Url)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Feed %s with %d posts found:\n", feeds.Channel.Title, len(feeds.Channel.Item))
+	for i, feed := range feeds.Channel.Item {
+		fmt.Printf("Feed %d: %s\n", i, feed.Title)
+	}
+
+	return nil
 }
