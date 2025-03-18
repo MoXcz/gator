@@ -68,7 +68,7 @@ func handlerRegister(s *state, cmd command) error {
 		return fmt.Errorf("Error: User could not be created, %w", err)
 	}
 
-	fmt.Printf("User '%v: %v' was added successfully\n", user.ID, user.Name)
+	fmt.Printf("User '%v: %v' added successfully\n", user.ID, user.Name)
 
 	err = s.cfg.SetUser(user.Name)
 	if err != nil {
