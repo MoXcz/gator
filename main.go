@@ -48,6 +48,7 @@ func main() {
 	cmds.register("follow", middlewareLoggedIn(handlerFollow))
 	cmds.register("unfollow", middlewareLoggedIn(handlerUnfollow))
 	cmds.register("following", middlewareLoggedIn(handleListFeedFollows))
+	cmds.register("browse", middlewareLoggedIn(handleBrowse))
 
 	if len(os.Args) < 2 {
 		log.Fatalf("Error: Insufficient arguments")
