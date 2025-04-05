@@ -1,5 +1,7 @@
 # Gator
 
+> Brought to you thanks to [boot.dev](https://www.boot.dev/)
+
 This is `gator` a RSS feed aggregator to follow posts from websites with integrated storage.
 
 ## Quick Start
