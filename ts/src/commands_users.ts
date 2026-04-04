@@ -1,9 +1,9 @@
-import { setUser } from "./config";
-import { createUser, getUser } from "./db/queries/users";
+import { readConfig, setUser } from "./config";
+import { createUser, getUser, getUsers } from "./db/queries/users";
 
-export async function handlerRegister(_: string, ...args: string[]) {
+export async function handlerRegister(cmdName: string, ...args: string[]) {
   if (args.length < 1) {
-    throw Error("expected username argument");
+    throw Error(`usage: ${cmdName} <name>`);
   }
 
   const username = args[0];
@@ -17,9 +17,9 @@ export async function handlerRegister(_: string, ...args: string[]) {
   console.log(`User ${newUser.name} created`);
 }
 
-export async function handlerLogin(_: string, ...args: string[]) {
+export async function handlerLogin(cmdName: string, ...args: string[]) {
   if (args.length < 1) {
-    throw Error("expected username argument");
+    throw Error(`usage: ${cmdName} <name>`);
   }
   const username = args[0];
   const user = await getUser(username);
