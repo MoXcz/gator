@@ -30,3 +30,20 @@ export async function handlerLogin(cmdName: string, ...args: string[]) {
   setUser(username);
   console.log(`User ${username} has been set`);
 }
+
+export async function handlerUsers(cmdName: string, ...args: string[]) {
+  if (args.length > 0) {
+    throw Error(`usage: ${cmdName}`);
+  }
+
+  const users = await getUsers();
+  const config = readConfig();
+
+  for (const user of users) {
+    if (user.name == config.currentUserName) {
+      console.log(`  * ${user.name} (current)`);
+    } else {
+      console.log(`  * ${user.name}`);
+    }
+  }
+}
