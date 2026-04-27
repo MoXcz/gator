@@ -12,7 +12,7 @@ export async function handlerReset(_: string, ...args: string[]) {
     await deleteFeeds();
     await deleteFeedFollows();
   } catch {
-    throw Error("could not delete users/feeds from table");
+    throw Error("could not delete all rows from tables");
   }
-  console.log("users and feeds tables deleted");
+  console.log("all tables reset!");
 }

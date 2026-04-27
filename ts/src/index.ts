@@ -1,10 +1,18 @@
 import { exit } from "node:process";
-import { CommandsRegistry, registerCommand, runCommand } from "./commands";
+import {
+  CommandHandler,
+  CommandsRegistry,
+  registerCommand,
+  runCommand,
+  UserCommandHandler,
+} from "./commands";
 import { handlerReset } from "./command_reset";
 import { handlerLogin, handlerRegister } from "./commands_users";
 import { handlerAgg } from "./command_agg";
 import { handlerAddFeed, handlerFeeds } from "./commands.feeds";
 import { handleFollow, handleFollowing } from "./command_follow";
+import { readConfig } from "./config";
+import { getUser } from "./db/queries/users";
 
 async function main() {
   const cmds: CommandsRegistry = {};
@@ -12,10 +20,10 @@ async function main() {
   registerCommand(cmds, "register", handlerRegister);
   registerCommand(cmds, "reset", handlerReset);
   registerCommand(cmds, "agg", handlerAgg);
-  registerCommand(cmds, "addfeed", handlerAddFeed);
+  registerCommand(cmds, "addfeed", middlewareLoggedIn(handlerAddFeed));
   registerCommand(cmds, "feeds", handlerFeeds);
-  registerCommand(cmds, "follow", handleFollow);
-  registerCommand(cmds, "following", handleFollowing);
+  registerCommand(cmds, "follow", middlewareLoggedIn(handleFollow));
+  registerCommand(cmds, "following", middlewareLoggedIn(handleFollowing));
 
   if (process.argv.length < 3) {
     console.log("invalid number of arguments");
@@ -32,3 +40,19 @@ main().catch((err) => {
   console.error(err.message);
   exit(1);
 });
+
+function middlewareLoggedIn(handler: UserCommandHandler): CommandHandler {
+  return async function (cmdName: string, ...args: string[]) {
+    const config = readConfig();
+    const username = config.currentUserName;
+    if (!username) {
+      throw new Error(`User not set`);
+    }
+
+    const user = await getUser(username);
+    if (!user) {
+      throw new Error(`User ${username} not found`);
+    }
+    await handler(cmdName, user, ...args);
+  };
+}

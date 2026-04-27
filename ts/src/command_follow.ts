@@ -1,20 +1,20 @@
-import { readConfig } from "./config";
 import { getFeed } from "./db/queries/feed";
 import {
   createFeedFollow,
   getFeedFollowsForUser,
 } from "./db/queries/feed_follows";
-import { getUser } from "./db/queries/users";
+import { User } from "./db/schema";
 
-export async function handleFollow(cmdName: string, ...args: string[]) {
+export async function handleFollow(
+  cmdName: string,
+  user: User,
+  ...args: string[]
+) {
   if (args.length < 1) {
     throw Error(`usage: ${cmdName} <url>`);
   }
 
   const url = args[0];
-  const config = readConfig();
-
-  const user = await getUser(config.currentUserName);
   const feed = await getFeed(url);
 
   const feedFollow = await createFeedFollow(user.id, feed.id);
@@ -22,13 +22,14 @@ export async function handleFollow(cmdName: string, ...args: string[]) {
   console.log(`Feed ${feedFollow.feedName} followed by ${feedFollow.userName}`);
 }
 
-export async function handleFollowing(cmdName: string, ...args: string[]) {
+export async function handleFollowing(
+  cmdName: string,
+  user: User,
+  ...args: string[]
+) {
   if (args.length > 0) {
     throw Error(`usage: ${cmdName}`);
   }
-
-  const config = readConfig();
-  const user = await getUser(config.currentUserName);
 
   const feedFollows = await getFeedFollowsForUser(user.id);
   console.log(`Feeds followed by ${user.name}`);
