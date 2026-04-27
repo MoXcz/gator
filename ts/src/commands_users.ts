@@ -21,6 +21,7 @@ export async function handlerLogin(cmdName: string, ...args: string[]) {
   if (args.length < 1) {
     throw Error(`usage: ${cmdName} <name>`);
   }
+
   const username = args[0];
   const user = await getUser(username);
   if (!user) {

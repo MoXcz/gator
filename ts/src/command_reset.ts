@@ -1,3 +1,5 @@
+import { deleteFeeds } from "./db/queries/feed";
+import { deleteFeedFollows } from "./db/queries/feed_follows";
 import { deleteUsers } from "./db/queries/users";
 
 export async function handlerReset(_: string, ...args: string[]) {
@@ -7,8 +9,10 @@ export async function handlerReset(_: string, ...args: string[]) {
 
   try {
     await deleteUsers();
+    await deleteFeeds();
+    await deleteFeedFollows();
   } catch {
-    throw Error("could not delete users from table");
+    throw Error("could not delete users/feeds from table");
   }
-  console.log("users table deleted");
+  console.log("users and feeds tables deleted");
 }
