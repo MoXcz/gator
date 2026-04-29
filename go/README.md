@@ -1,7 +1,5 @@
 # Gator
 
-> Brought to you thanks to [boot.dev](https://www.boot.dev/)
-
 This is `gator` a RSS feed aggregator to follow posts from websites with integrated storage.
 
 ## Quick Start
@@ -16,9 +14,10 @@ You will also need postgresql for storage (information on how to install it [her
 
 With both the program and postgresql installed set the configuration file at
 `$HOME/.gatorconfig.json` with the database URL:
+
 ```json
 {
-    "db_url":"protocol://username:password@host:port/database",
+  "db_url": "protocol://username:password@host:port/database"
 }
 ```
 
@@ -145,7 +144,7 @@ Link: https://www.httrack.com/
 
 ```sh
 git clone https://github.com/MoXcz/gator
-cd gator
+cd gator/go
 ```
 
 ### Build the project:
@@ -154,4 +153,3 @@ cd gator
 go build .
 ./gator
 ```
-
