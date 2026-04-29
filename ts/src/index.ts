@@ -10,7 +10,11 @@ import { handlerReset } from "./command_reset";
 import { handlerLogin, handlerRegister } from "./commands_users";
 import { handlerAgg } from "./command_agg";
 import { handlerAddFeed, handlerFeeds } from "./commands.feeds";
-import { handleFollow, handleFollowing } from "./command_follow";
+import {
+  handleFollow,
+  handleFollowing,
+  handleUnfollow,
+} from "./command_follow";
 import { readConfig } from "./config";
 import { getUser } from "./db/queries/users";
 
@@ -24,6 +28,7 @@ async function main() {
   registerCommand(cmds, "feeds", handlerFeeds);
   registerCommand(cmds, "follow", middlewareLoggedIn(handleFollow));
   registerCommand(cmds, "following", middlewareLoggedIn(handleFollowing));
+  registerCommand(cmds, "unfollow", middlewareLoggedIn(handleUnfollow));
 
   if (process.argv.length < 3) {
     console.log("invalid number of arguments");
