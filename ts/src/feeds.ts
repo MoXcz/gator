@@ -77,11 +77,12 @@ export function printFeed(feed: Feed, user: User) {
 export async function scrapeFeeds() {
   const feedToFetch = await getNextFeedToFetch();
   await markFeedFetched(feedToFetch.id);
+
   const feed = await fetchFeed(feedToFetch.url);
   const items = feed?.channel.item ?? [];
 
   for (const item of items) {
     const date = new Date(item.pubDate);
-    createPost(item.title, feedToFetch.url, date, feedToFetch.id);
+    createPost(item.title, item.link, date, feedToFetch.id, item.description);
   }
 }
