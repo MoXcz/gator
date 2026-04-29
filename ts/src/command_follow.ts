@@ -1,4 +1,4 @@
-import { getFeed } from "./db/queries/feed";
+import { getFeed } from "./db/queries/feeds";
 import {
   createFeedFollow,
   deleteFeedFollow,

@@ -1,7 +1,8 @@
-import { createFeed, getFeedsWithUser } from "./db/queries/feed";
+import { createFeed, getFeedsWithUser } from "./db/queries/feeds";
 import { createFeedFollow } from "./db/queries/feed_follows";
 import { User } from "./db/schema";
 import { printFeed } from "./feeds";
+import { getPostsForUser } from "./db/queries/posts";
 
 export async function handlerAddFeed(
   cmdName: string,
@@ -33,5 +34,19 @@ export async function handlerFeeds(cmdName: string, ...args: string[]) {
     console.log(`Name: ${r.feeds.name}`);
     console.log(`URL:  ${r.feeds.url}`);
     console.log(`User: ${r.users.name}\n`);
+  }
+}
+
+export async function handlerBrowse(cmdName: string, ...args: string[]) {
+  if (args.length > 1 || args.length < 0) {
+    throw Error(`usage: ${cmdName} <limit> (optional)`);
+  }
+
+  const limit = Number(args[0]);
+  const safeLimit = Number.isFinite(limit) ? limit : 2;
+  const posts = await getPostsForUser(safeLimit);
+
+  for (const post of posts) {
+    console.log(`  - ${post.title}`);
   }
 }

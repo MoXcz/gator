@@ -9,7 +9,7 @@ import {
 import { handlerReset } from "./command_reset";
 import { handlerLogin, handlerRegister } from "./commands_users";
 import { handlerAgg } from "./command_agg";
-import { handlerAddFeed, handlerFeeds } from "./commands.feeds";
+import { handlerAddFeed, handlerBrowse, handlerFeeds } from "./commands.feeds";
 import {
   handleFollow,
   handleFollowing,
@@ -29,6 +29,7 @@ async function main() {
   registerCommand(cmds, "follow", middlewareLoggedIn(handleFollow));
   registerCommand(cmds, "following", middlewareLoggedIn(handleFollowing));
   registerCommand(cmds, "unfollow", middlewareLoggedIn(handleUnfollow));
+  registerCommand(cmds, "browse", handlerBrowse);
 
   if (process.argv.length < 3) {
     console.log("invalid number of arguments");

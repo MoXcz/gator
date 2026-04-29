@@ -1,4 +1,4 @@
-import { deleteFeeds } from "./db/queries/feed";
+import { deleteFeeds } from "./db/queries/feeds";
 import { deleteFeedFollows } from "./db/queries/feed_follows";
 import { deleteUsers } from "./db/queries/users";
 
