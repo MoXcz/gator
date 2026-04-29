@@ -13,7 +13,10 @@ export const users = pgTable("users", {
 export const feeds = pgTable("feeds", {
   id: uuid("id").primaryKey().defaultRandom().notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at"),
+  updatedAt: timestamp("updated_at")
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
   lastFetchedAt: timestamp("last_fetched_at"),
   name: text("name").notNull().unique(),
   url: text("url").notNull().unique(),
@@ -25,7 +28,10 @@ export const feeds = pgTable("feeds", {
 export const feedFollows = pgTable("feed_follows", {
   id: uuid("id").primaryKey().defaultRandom().notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at"),
+  updatedAt: timestamp("updated_at")
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
   userID: uuid("user_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
@@ -37,9 +43,12 @@ export const feedFollows = pgTable("feed_follows", {
 export const posts = pgTable("posts", {
   id: uuid("id").primaryKey().defaultRandom().notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at"),
-  title: text("title"),
-  url: text("url"),
+  updatedAt: timestamp("updated_at")
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+  title: text("title").notNull(),
+  url: text("url").notNull().unique(),
   description: text("description"),
   publishedAt: timestamp("published_at"),
   feedID: uuid("feed_id")
