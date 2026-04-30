@@ -1,4 +1,4 @@
-import { fetchFeed, scrapeFeeds } from "./feeds";
+import { scrapeFeeds } from "./feeds";
 
 export async function handlerAgg(cmdName: string, ...args: string[]) {
   if (args.length < 1) {
